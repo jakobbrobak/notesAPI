@@ -17,13 +17,16 @@ use Illuminate\Http\Request;
 //     return $request->user();
 // });
 
-Route::prefix('v1')->group(function(){
+Route::prefix('v1')->group(function () {
 
-Route::post('/register', 'Api\AuthController@register');
-Route::post('/login', 'Api\AuthController@login');
+    Route::post('/register', 'Api\AuthController@register');
+    Route::post('/login', 'Api\AuthController@login');
 
-Route::apiResource('note', 'Api\NoteController')
-    ->only(['show', 'destroy', 'update', 'store']);
+    Route::apiResource('note', 'Api\NoteController')
+        ->only(['show', 'destroy', 'update', 'store']);
+
+    Route::apiResource('notes', 'Api\NoteController')
+        ->only('index');
 });
 
 // Route::prefix('v2')->group(function () {

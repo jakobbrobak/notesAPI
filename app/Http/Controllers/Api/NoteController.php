@@ -4,6 +4,9 @@ namespace App\Http\Controllers\Api;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\NoteResource;
+use App\Http\Resources\NoteResourceCollection;
+use App\Note;
 
 class NoteController extends Controller
 {
@@ -12,19 +15,9 @@ class NoteController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index() : NoteResourceCollection
     {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
+        return new NoteResourceCollection(Note::paginate());
     }
 
     /**
@@ -35,7 +28,14 @@ class NoteController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'title' => 'required',
+            'description'  => 'required'
+        ]);
+
+        $note = Note::create($request->all());
+
+        return new NoteResource($note);
     }
 
     /**
@@ -44,20 +44,9 @@ class NoteController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Note $note) : NoteResource
     {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
+        return new NoteResource($note);
     }
 
     /**
@@ -67,9 +56,11 @@ class NoteController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Note $note, Request $request) : NoteResource
     {
-        //
+        $note->update($request->all());
+
+        return new NoteResource($note);
     }
 
     /**
@@ -78,8 +69,10 @@ class NoteController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Note $note)
     {
-        //
+        $note->delete();
+
+        return response()->json();
     }
 }
